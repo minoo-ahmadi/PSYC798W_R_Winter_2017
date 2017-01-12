@@ -3,6 +3,9 @@ title: "Class4_mynotes"
 output: word_document
 ---
 
+
+
+
 ```{r setup, include=FALSE}
 
 ```
