@@ -3,29 +3,40 @@ title: "Class4_mynotes"
 output: word_document
 ---
 
+renaming levels of a factor:
+```{r}
+mysleep <- sleep
+summary(mysleep)
+head(mysleep)
+levels(mysleep$group)
+levels(mysleep$group)<- c("a", "b")
+summary(mysleep)
+
+paste("s", "1", sep = "") # pasting strings together
+paste("s", mysleep$ID, sep = "")  #sep specifies the separator. it's null (no space) here.
+factor(paste("s", mysleep$ID, sep = "")) #coercing into factor.
+mysleep$ID <- factor(paste("s", mysleep$ID, sep = ""))
+summary(mysleep)
 
 
-
-```{r setup, include=FALSE}
 
 ```
 
-## R Markdown
+## 
+droplevles() drops (the whole row of) levels (of any factor column in the data file) that have a value of zero.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+identical() checks if two arguments (2 columns for example) are identical or not.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+legth(sleep): treating data frame like a list. This will return the objects inside the list and not theri contents (values of the columns).
 
-```{r cars}
-summary(cars)
+assigning NULL to a column in a data frame (or to anything else) will get rid of it (that column will be deleted).
+
+
+help ("colnames")
+help ("colnames<-")
+
+```{r}
+
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
