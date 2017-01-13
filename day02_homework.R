@@ -5,7 +5,7 @@
 install.packages("haven") # althernatively: install.packages("tidyverse")
 library(haven) #reading the package
 getwd() # to see the current directory
-setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W") # changing directory to where the file I'm trying to read is saved.
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017") # changing directory to where the file I'm trying to read is saved.
 my.data<- read_sav("Data_FYP.sav") # reading the SPSS data file
 
 
