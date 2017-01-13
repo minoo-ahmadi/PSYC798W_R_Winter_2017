@@ -1,0 +1,80 @@
+---
+title: "Day 3 Practice"
+output: html_document
+---
+
+1. Make a "copy" of the `iris` data set in your workspace. Use `summary()` on it, identify a factor column.
+
+```{r}
+my.copy.of.iris <- iris
+summary(my.copy.of.iris)
+is.factor(my.copy.of.iris) #returns just one TRUE or FALSE for the whole dataset.The painful way to do it:
+ is.factor(my.copy.of.iris[,1])
+ is.factor(my.copy.of.iris[,2])
+ is.factor(my.copy.of.iris[,3])
+ is.factor(my.copy.of.iris[,4])
+ is.factor(my.copy.of.iris[,5])
+# Instead use the below:
+lapply(my.copy.of.iris,is.factor) # data.frames are fancy lists. This function applies a function to the list and returns the result for each column.
+```
+
+2. Create different versions of the factor column, in the new data set:
+   a. a numeric vector with `as.numeric()`
+   b. a character vector
+   
+```{r}
+#a.
+ver1.Species<- as.numeric(my.copy.of.iris$Species)
+#b.
+ver2.Species<- as.character(my.copy.of.iris$Species)
+```
+
+3. Use `xtabs()` to see how the values in these new columns line up with the original factor column.
+
+```{r}
+xtabs(~ ver1.Species + ver2.Species, my.copy.of.iris)
+```
+
+4. Check the order of levels of Species with `levels()`. Create a new column from this factor, changing the order of the levels, using:
+  a. `relevel()`
+  b. `reorder()`
+  c. `factor()`
+
+```{r}
+levels(my.copy.of.iris$Species)
+
+new.species1 <- relevel(my.copy.of.iris$Species, "virginica")
+new.species1 #relevel doesn't change the order in the data but in the output of the later analyses we'll do using the data. useful for changing the reference variable in regression or the order of bars in a plot, for example.
+
+my.copy.of.iris$SpeciesOrdered[my.copy.of.iris$Species=="virginica"]<- 1 
+my.copy.of.iris$SpeciesOrdered[my.copy.of.iris$Species=="setosa"]<- 2 
+my.copy.of.iris$SpeciesOrdered[my.copy.of.iris$Species=="versicolor"]<- 3
+# or: my.copy.of.iris$SpeciesOrdered<- ver1.Species[ ver1.Species==1]<- 1 ,...
+new.species2<- reorder(my.copy.of.iris$Species, my.copy.of.iris$SpeciesOrdered)
+
+new.species3<- factor(my.copy.of.iris$Species, levels= c("versicolor", "virginica", "setosa"))
+```
+
+5. Working with missing values
+   - read in the data from "CognitionPaperModifiedData.csv"
+   - locate NAs
+   - display the rows of the data frame where the WithinMinPairs variable has missing values
+   - create a new column that's a copy of the WithinMinPairs column
+   - replace all missing values in this column with zeros
+   - use `xtabs()` to check this change in coding
+
+```{r}
+scottdata <- read.csv("scottdata/CognitionPaperModifiedData.csv")
+
+Missing.data<- sum(is.na(scottdata)) # returns the total number of NAs in the data frame. (since TRUE is 1 and FALSE in 0)
+Missing.data<- which(!is.na(scottdata)==0, arr.ind=TRUE) # returns the row and col indices of the NAs in the data frame.
+
+Missing.WithinMinPairs.rows <- which(is.na(scottdata$WithinMinPairs)>0) # returns the (row) number of the NA.
+
+scottdata$WithinMinPairs.copy <-  scottdata$WithinMinPairs
+
+scottdata$WithinMinPairs.copy[is.na(scottdata$WithinMinPairs.copy)] <- 0 
+
+xtabs(~ WithinMinPairs + WithinMinPairs.copy, scottdata) # I don't follow the crosstab that is being printed out. The only values reported for WithinMinPairs are 0,1,2,3, while WithinMinPairs.copy is almost all 0. I'm not sure what went wrong.
+```
+

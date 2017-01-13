@@ -1,0 +1,36 @@
+---
+title: "Day 4 Homework"
+output: html_document
+---
+
+1. Find some aspect of your data that needs to be combined or merged in some way.  This could be a variety of things:
+  - multiple "sheets" in an Excel
+  - multiple files that should be combined into one data set
+  - properties that need to be merged in to one data set. For example:
+    - you have a table of subject properties (gender, handedness, etc.) that need to be merged into the item-level data
+    - you have other information on countries (population, etc.) that need to be merged in
+  - if you DON'T have this naturally-occurring issue, figure out a way to manufacture it. For example:
+    - split up your data into chunks
+    - make up some new table of information that you want to merge in
+  - Explain (in words) what you are trying to do
+  - Use binding/merging commands to accomplish this
+
+``` {r}
+library(haven) #reading the package
+getwd() 
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data")
+my.data<- read_sav("Data_FYP.sav")
+
+# artificially creating random chunks of data to bind later:
+library(dplyr)
+chunk1 <- sample_frac (my.data, 1/3)
+chunk2 <- sample_frac (my.data, 1/3)
+chunk3 <- sample_frac (my.data, 1/3)
+
+chunks.bound.rbind <- rbind(chunk1, chunk2, chunk3) # problem is that since chunks we've defined are random samples, we have multiple occurances of same rows. if we could use a function that could avoid such repititions would be more meaningful.
+chunk4 <- chunk3[1:nrow(chunk3), 5:ncol(chunk3)] # to creat a chunk with different column size than aboe mentioned chunks. This cannot be done using rbind, but it's possible using bind_rows:
+chunks.bound.bind_rows <- bind_rows(chunk1, chunk2, chunk3, chunk4, .id = "Chunk") # also creates a column named Chunk which will show each chunk (i.e. rows corresponding to chunk 1, chunk 2,...).
+head(chunks.bound.bind_rows) # just to double check the Chunk column
+tail(chunks.bound.bind_rows) # just to double check the Chunk column
+
+```
