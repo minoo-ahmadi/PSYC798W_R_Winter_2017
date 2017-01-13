@@ -2,27 +2,44 @@
 title: "Class5_mynotes"
 output: pdf_document
 ---
+if we use cbind to bind to set of data with different row number, the smaller data set will be repeated to fill in the empty rows. this is called recycling.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+recycling only works if it's a myltiple of the number of rows of a data frame.
+See "Creating new columns" in the lecture.
+
+... : using arguments from other classes.
+
+
+if measurements (units) in a column are the same like centimeter, the long fomat is more convenient.
+
+regular expressions: e.g. \\ is somthing like * in matlab. for example subject\\ is like subject* in matlab. it means anything that has subject in it and contines with anythig.
+
+gsub function is global substitution and substitues values with what we define.
+
+
+filter() from dplyr filters in (= pulls out) rows.
+select() does it for columns.
+
+most objects in R are S3.
+```{r}
+install.packages("tidyr")
+library("tidyr")
+
+
+
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+
+```{r}
+
+
+
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

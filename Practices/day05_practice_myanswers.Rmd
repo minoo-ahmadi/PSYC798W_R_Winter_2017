@@ -1,0 +1,158 @@
+---
+title: "Day 5 Practice"
+output: html_document
+---
+
+
+1. Make another copy of the iris data set
+  - Using `data.frame()` create a (small) table that assigns a color to each species.  That is, make a column called Species and a column called Color, with one row per species
+  - use `merge()` to merge the data into the copy of the iris data set
+  - create another table with an additional species (and color)
+  - merge this new table with iris. What happened?
+  - create one more table matching species to color, with only two rows, missing setosa
+  - merge this new table with the copy of iris. What happened?
+
+```{r}
+myris <- iris
+color.table <- data.frame(Species = c("setosa", "virginica", "versicolor"), Color = c("red", "blue", "violet"))
+myris.merged1 <- merge(myris, color.table)
+# or:
+myris.merged2 <- merge(myris, color.table, by= "Species")
+
+table.extra.species <- data.frame(Species = c("setosa", "newspecies", "virginica","versicolor"), Color = c("red", "green", "blue", "violet"))
+
+myris.merged3 <- merge(myris.merged1, table.extra.species, all= FALSE)
+myris.merged3 <- merge(myris.merged1, table.extra.species, all= TRUE)
+
+```
+
+2. Make (yet another) copy of the iris data set
+  - Create a column that takes the log of the Sepal.Width
+  - Create a column that represents the multiplication of Sepal.Width by Sepal.Length
+  - Create a "median split" column on Sepal.Width. In other words, calculate the median of Sepal.Width, and then create a column that indicates whether the value in that row is less than the median or not
+  
+  
+```{r}
+myris2 <- iris
+myris2$log.Sep.W <- log(myris2$Sepal.Width)
+myris2$Sep.W.by.Sep.L <- (myris2$Sepal.Width)*(myris2$Sepal.Length)
+
+
+
+```
+
+3. Start with (yes, you guessed it!) another copy of the iris data set
+  - Use `gather()` to convert this wide data to long format
+    - You should be "gathering up" all of the columns with measurements
+  - "Tidy" up the new factor column by splitting it into two columns: one designating dimension (width vs. length), one designating flower part (sepal vs. petal)
+    
+    
+```{r}
+myris3 <- iris
+myris3.long <- gather (myris3, measurement, cm, Sepal.Length:Petal.Width)
+
+myris3.long <- separate (data= myris3.long, col = measurement, sep = "\\.", into = c("part", "dimension"))
+
+```
+
+4. Continue working with the "long" iris data from previous problem
+  - using `dplyr` functions, get the mean for each "cell" in the species x part x dimension design
+  - make the results "wide", with different columns for each species
+
+```{r}
+
+```
+
+5. Use the sample data in the scottdata folder
+  - run a logistic regression, using `glm()`, where "Merged" status is the (binary) dependent variable, and "WithinMinPairs" is the predictor.
+  - Hint: the basic usage of `glm()` is:
+
+results <- glm(DV ~ predictor1 + predictor2 + ...  ,                               
+               data = dataframe.object, family = "binomial")
+               
+```{r}
+practice <- read.csv("scottdata/CognitionPaperFinalData.csv")
+
+```
+
+  - use `summary()` to display the results.
+  
+```{r}
+
+```
+
+  - using INLINE code, report the estimate, standard error, and p-value for the WithinMinPairs coefficient.  Hint #1: save the summary as an object, and pull values from that. Hint #2: use `str()` to figure out how to extract these values. Hint #3: save the individual results as objects first, then put in inline code.
+
+```{r}
+
+```
+
+The estimate is `r`, the standard error is `r`, and the p-value is `r`.
+
+EXTRA CREDIT: figure out how to display the above results with only a few decimal places
+
+# Graphics practice
+
+HINT: as you go, save plots as objects. This will make the last question much easier.
+
+0. Get the `french_fries` data into "long" format.  Call the new value variable "rating" and the factor with all the descriptors "flavor". Re-code the labels of the `treatment` variable to be "oil1", "oil2", and "oil3".
+
+```{r}
+
+```
+
+1. Use `ggplot()` to plot a histogram and a density plot (separately) for `rating` 
+   - Try some different values for `binwidth` for the histogram.
+   - Try some different values for `adjust` for the density plot.
+
+```{r}
+library(ggplot2)
+
+```
+
+2. How does the distribution look?  Try transforming the variable and try to get it to look more normal (i.e., more Gaussian).  If it already looks normal, do something to it to make it look non-normal.
+
+```{r}
+
+```
+
+3. Let's break this up by the `treatment` factor
+   - Plot it as a density plot, mapping `color` to the factor
+   - Same, but try using `fill` instead of `color`
+   - Same, using `linetype` instead of `color`
+   - Plot the data as a boxplot, with the factor as `x` and the numerical variable as `y`
+
+```{r}
+
+```
+
+4. Now let's look at breaking up a histogram across this factor.  With the same variables you used in #3:
+   - Plot a histogram, but use faceting to display them, one above the other.
+   - Try mapping the factor to `color` or `fill`, to see what that looks like.
+
+```{r}
+
+```
+
+5. Now cast the data back to where the different flavors are in different columns. Pick two of the flavor columns to explore
+   - Create a scatterplot, with one variable mapped to `x` and the other to `y`.
+   - Plot a "loess" smoother on top of the scatterplot
+   - Plot a regression line on top of the scatterplot (instead of the loess)
+
+```{r}
+
+```
+
+6. With this same scatterplot, break it up by `treatment`
+   - Map `treatment` to `color`
+ 
+```{r}
+
+```
+
+7. Output all of the plots above as a single PDF.
+
+```{r}
+
+```
+
