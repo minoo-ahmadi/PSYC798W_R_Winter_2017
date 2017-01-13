@@ -27,7 +27,7 @@ droplevles() drops (the whole row of) levels (of any factor column in the data f
 
 identical() checks if two arguments (2 columns for example) are identical or not.
 
-legth(sleep): treating data frame like a list. This will return the objects inside the list and not theri contents (values of the columns).
+length(sleep): treating data frame like a list. This will return the objects inside the list and not theri contents (values of the columns).
 
 assigning NULL to a column in a data frame (or to anything else) will get rid of it (that column will be deleted).
 
