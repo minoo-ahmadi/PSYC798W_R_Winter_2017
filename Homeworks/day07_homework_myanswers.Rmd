@@ -1,0 +1,68 @@
+---
+title: "Day 7 Homework"
+output: html_document
+---
+
+Find three relationships in your data.  For each relationship, do the following:
+
+1. Verbally articulate the relationship you want to examine.
+
+BIS and BFNE: Is there arelationship between behavioral inhibition and fear of negative evaluation? Do males and females differ regarding this relationship?
+
+BFNE and SPS_SIAS_Total: Is there arelationship between fear of negative evaluation and the other measure of social anxiety (positive correlation)? Do males and females differ regarding this relationship?
+
+
+IPIP_Domineering and BAS_Reward_Responsiveness: Are dominance levle and reward responsiveness related (negative correlation)? Do males and females differ regarding this?
+
+2. Verbally identify what variables you want to map to each graphical dimension.
+
+x: BIS
+y: BFNE
+
+x: BFNE 
+y: SPS_SIAS_Total
+
+x: IPIP_Domineering 
+y: BAS_Reward_Responsiveness
+
+3. Reshape your data as needed.
+
+no reshaping is needed, because my only factor variable is sex which has string values of male and female and not numerical values. (I could use 0 and 1 values, but that doesn't seem interesting)
+
+4. Use ggplot2 to create your graphs.
+
+``` {r}
+library (haven)
+getwd() 
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data")
+my.data<- read_sav("Data_FYP.sav")
+
+ggplot(my.data, aes(x = BIS, y = BFNE)) + geom_bar(stat = "identity", aes(fill = Sex))
+
+ggplot(my.data, aes(BFNE, SPS_SIAS_Total)) + geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))
+
+ggplot(my.data, aes(IPIP_Domineering, BAS_Reward_Responsiveness)) + geom_point(aes(color = Sex), size = 6) + geom_smooth(method = "loess", aes(color = Sex))
+
+```
+
+5. Fiddle with colors, axis labels, themes, etc. until the plot looks "publication ready" to you.  Try to change at least one thing per plot.
+
+``` {r}
+ggplot(my.data, aes(x = BIS, y = BFNE)) + geom_bar(stat = "identity", aes(fill = Sex) , position = "dodge")+ theme_classic()
+
+ggplot(my.data, aes(BFNE, SPS_SIAS_Total)) + geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))+ set1.colors
+
+ggplot(my.data, aes(IPIP_Domineering, BAS_Reward_Responsiveness)) + geom_point(aes(color = Sex), size = 6) + geom_smooth(method = "loess", aes(color = Sex))+ scale_color_manual(values = c("magenta", "blue"))+ scale_x_continuous(name = "Dominance Level") + scale_y_continuous(name = "Reward Responsiveness")+ theme_minimal() + theme(legend.position = "top")
+
+```
+
+6. Save all plots to a format that you could use in a paper.  HINT: PNG works well for pasting into Word documents.
+
+``` {r}
+savePlot(filename = "CorrelationPlots", type = "png") # this returned an error: Error in savePlot(filename = "CorrelationPlots", type = "png") : can only copy from 'windows' devices
+
+# so I used this one:
+dev.copy(png, 'CorrelationPlots.png')
+dev.off
+
+```
