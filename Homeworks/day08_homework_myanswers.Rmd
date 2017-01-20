@@ -1,0 +1,84 @@
+---
+title: "Day 8 Homework"
+output: html_document
+---
+The following code will get rid of this annoying error that would print out everytime I was trying to setwd: "The working directory was changed to C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data inside a notebook chunk. The working directory will be reset when the chunk is finished running. Use the knitr root.dir option in the setup chunk to change the the working directory for notebook chunks."
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/gits/project/")
+```
+
+Find two repetitive things that you would like to be able to do with your data.  This can be something having to do with coding variables, or saving plots, or running an analysis multiple times on different subsets, etc. etc.  Just try to find something where you would normally need to "copy and paste" sections of code, varying only one or two things.  Figure out how to use a loop to accomplish this.  
+
+For BOTH of these things, take the following steps:
+
+1. Articulate what you want to do (verbally)
+
+multiple correlation analysis between several variables.
+
+plotting multiple variables each separately in relation to another variable and saving the plots.
+
+
+2. Give some code that illustrates the "copy and paste" method.  This can just show a couple of steps.  That is, if you would be running through a bunch of iterations, just copy and paste a couple of times, not everything.
+
+``` {r}
+library (haven)
+getwd() 
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data")
+my.data<- read_sav("Data_FYP.sav")
+
+correlation1 <- cor.test(my.data$DominanceCongruencyEffect200, my.data$BFNE)
+correlation2 <- cor.test(my.data$DominanceCongruencyEffect200, my.data$BIS)
+correlation3 <- cor.test(my.data$DominanceCongruencyEffect200, my.data$SPS)
+
+
+
+library(ggplot2)
+ggplot(my.data, aes(DominanceCongruencyEffect200, BFNE)) + geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))+ facet_wrap(~ Sex)
+
+ggplot(my.data, aes(DominanceCongruencyEffect200, BIS)) + geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))+ facet_wrap(~ Sex)
+
+ggplot(my.data, aes(DominanceCongruencyEffect200, SPS)) + geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))+ facet_wrap(~ Sex)
+
+```
+
+
+
+
+3. Work this code into a loop format, so that no copy & paste is neccesary.  You will need to set up a "counter" variable that cycles through various values (which do not have to be numeric), changing with every pass through the loop.  But you may also need to make other changes to your code to accommodate the loop.
+
+```{r}
+my.vars.names <- c("BIS", "BFNE", "SPS", "SIAS", "IPIP_Domineering", "IPIP_Narcicissm", "BAS_Reward_Responsiveness", "RSE")
+my.answer <- vector(length = length(my.vars.names))
+shared.variable <- my.data$DominanceCongruencyEffect200
+
+# I first tried this:
+
+for(i in c(BIS, BFNE, SPS, SIAS, IPIP_Domineering, IPIP_Narcicissm, BAS_Reward_Responsiveness, RSE)) {
+  this.variable <- my.data[my.data$i]
+  my.answer[i] <- cor.test(this.variable, shared.variable)
+}
+
+# But it didn't work.. So, I changed it to:
+
+for(i in c(my.data$BIS, my.data$BFNE, my.data$SPS, my.data$SIAS,
+           my.data$IPIP_Domineering, my.data$IPIP_Narcicissm,
+           my.data$BAS_Reward_Responsiveness, my.data$RSE)) {
+  this.variable <- my.data[my.data$Sex == "f", i]
+  my.answer[i] <- cor.test(this.variable, shared.variable)
+}
+
+# which didn't work either. I tried a bunch of other ways which didn't work as well. Then I did some search which led to mapply and a couple functions that I wans't sure how to deal with and thought I would wait until you teach functions tomorrow.
+
+# for the same reasons, I'm confused about plotting. Here is what I tried and failed:
+
+pdf("myplots.pdf")
+
+for(i in c("BIS", "BFNE", "SPS", "SIAS", "IPIP_Domineering", "IPIP_Narcicissm", "BAS_Reward_Responsiveness", "RSE")) {
+  print(ggplot(my.data, aes(shared.variable, paste(my.data$, i))+ geom_point(aes(color = Sex), size = 4) + geom_smooth(method = "lm", aes(color = Sex))+ facet_wrap(~ Sex) )
+        }
+dev.off()
+
+```
+
+As usual, send me your .Rmd file with any data I need to replicate your results.
