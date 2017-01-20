@@ -1,0 +1,38 @@
+---
+title: "Class8_mynotes"
+output: html_document
+---
+
+```{r}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 
+systme.time() tells you how long it takes a chunk of code to run.
+elapsed: the real time it took.
+dnorm creates a density plot of normal distribution.
+pnorm is the probability of a value smaler than... useful for p-values.
+qnorm returns the quantile distribution.
+mvrnorm: multivariate random normal
+get() will find the object (/value/content) with a name specified.
+
+%% modules---> something %% something returns the remainder of a division.
+
+
+
+```{r}
+
+
+
+```
+
+
+
+
+```{r}
+
+
+
+```
+
+
