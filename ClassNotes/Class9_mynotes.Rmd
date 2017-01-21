@@ -1,0 +1,31 @@
+---
+title: "Class9_mynotes"
+author: "Minoo Ahmadi"
+date: "January 20, 2017"
+output: html_document
+---
+
+mvrnorm creates multivariate randorm normal distributions. uses mean vector and covariane.
+
+in a function you can use either output or return(whatever) as the last line.
+
+mutate() from dplyr package is an alternative to apply functions. could still use $ instead, unless it's a long statemnt.
+
+apply family is used less and instead dplyr is used more often these days.
+
+. (dot) in for example a do function means whatever passed to me (form the previous statement).
+
+```{r}
+
+
+```
+
+
+
+
+```{r}
+
+
+
+```
+
