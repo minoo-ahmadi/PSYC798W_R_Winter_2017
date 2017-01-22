@@ -5,22 +5,114 @@ date: "January 19, 2017"
 output: html_document
 ---
 Power analysis
-A buch of regressions and plotting.
+A bunch of regressions and plotting.
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/gits/project/")
+```
+## Power analysis for a regression analysis
+Regress Dominance congruence effect on social anxiety scores (SPS, SIAS, BFNE). 
+
+
+First, simulating data for a logistic regression:
+
+```{r}
+
+
+
 ```
 
-## R Markdown
+The example for t.test:
+```{r}
+n.sim <- 10000
+sample.n <- 100
+mean.difference <- .3
+sd.x <- 1
+sd.y <- 1
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+results <- data.frame(iteration = 1:n.sim, p.ttest = NA, p.wilcox = NA)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+for(counter in 1:n.sim) {
+  this.x <- rnorm(sample.n, mean = 0, sd = sd.x)
+  this.y <- rnorm(sample.n, mean = mean.difference, sd = sd.y)
+  this.ttest <- t.test(this.x, this.y)
+  this.wilcox <- wilcox.test(this.x, this.y)
+  results[counter, "p.ttest"] <- this.ttest$p.value
+  results[counter, "p.wilcox"] <- this.wilcox$p.value
+  if(counter %% 500 == 0) {
+    print(paste("finished simulation #", counter))
+  }
+}
+head(results)
+results$ttestsig <- ifelse(results$p.ttest < .05, TRUE, FALSE)
+results$wilcoxsig <- ifelse(results$p.wilcox < .05, TRUE, FALSE)
+head(results)
+sum(results$ttestsig)/nrow(results)
+sum(results$wilcoxsig)/nrow(results)
 
-```{r cars}
-summary(cars)
+
 ```
+
+
+
+The example for correlation:
+
+``` {r}
+# set up the parameters of the simulation
+n.sim <- 10000
+sample.ns <- 100:200
+correlation <- .2
+
+power.analysis.results <- data.frame(sample.size = sample.ns, power = NA)
+
+#for(this.sample in sample.ns) {
+  cortable <- matrix(c(1, correlation, correlation, 1), ncol = 2)
+  # "pre-allocate" the results table
+  results <- data.frame(iteration = 1:n.sim, p = NA)
+  
+  for(counter in 1:n.sim) {
+    this.data <- as.data.frame(mvrnorm(this.sample, mu = c(0, 0), Sigma = cortable))
+    this.cortest <- cor.test(this.data$V1, this.data$V2)
+    results[counter, "p"] <- this.cortest$p.value
+    if(counter %% 500 == 0) {
+      print(paste("finished simulation #", counter))
+    }
+  }
+  #head(results)
+  results$sig <- ifelse(results$p < .05, TRUE, FALSE)
+  #head(results)
+  power.analysis.results[power.analysis.results$sample.size == this.sample, "power"] <-   sum(results$sig)/nrow(results)
+
+}
+
+head(power.analysis.results)
+
+power.threshold <- .9
+
+min.sample <- min(power.analysis.results$sample.size[power.analysis.results$power >= power.threshold])
+ggplot(power.analysis.results, aes(sample.size, power)) + geom_line() + 
+  geom_smooth(se = FALSE, method = "loess") + 
+  geom_hline(yintercept = max(power.analysis.results$power), color = "red") +
+  annotate("text", x = min(power.analysis.results$sample.size) + (max(power.analysis.results$sample.size) - min(power.analysis.results$sample.size))/2, y = 1.02, label = paste("max power in these simulations:", max(power.analysis.results$power))) +
+  geom_hline(yintercept = power.threshold, color = "red", linetype = 2) + 
+  annotate("text", x = min(power.analysis.results$sample.size) + (max(power.analysis.results$sample.size) - min(power.analysis.results$sample.size))/2, y = power.threshold + .02, label = paste("sample needed for", power.threshold, " power:", min.sample))
+    
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Including Plots
 
@@ -30,4 +122,9 @@ You can also embed plots, for example:
 plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Dominance Congruency effect (200, 400, 800): gather. 3 levels.
+
+power = sig tests/totall tests
+effect size for multiple regression: f^2 = R^2/1-R^2 (sort of an odds ratio)
+
+Regress Dominance congruence effect on social anxiety scores (SPS, SIAS, BFNE). 
