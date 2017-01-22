@@ -7,26 +7,86 @@ output: html_document
 Power analysis
 A bunch of regressions and plotting.
 
-
 ```{r "setup", include=FALSE}
 require("knitr")
 opts_knit$set(root.dir = "~/gits/project/")
 ```
+
+
+```{r}
+library (haven)
+getwd() 
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data")
+
+my.data<- read_sav("Data_FYP.sav")
+variable.names(my.data)
+my.data1<- my.data
+
+my.data1 <- gather(my.data1, social.anxiety.scale, social.anxiety.score, 202:204) # gathering BFNE, SPS, and SIAS under social.anxiety, as they are all indicators of social anxiety.
+my.data1$social.anxiety.scale <- as.factor(my.data1$social.anxiety.scale)
+
+# reg1<- glm(DominanceCongruencyEffect200~social.anxiety.score, data = my.data1)
+#summary.lm(reg1)
+#ggplot(my.data1, aes(social.anxiety.score, DominanceCongruencyEffect200)) + geom_point(aes(color = social.anxiety.scale), size = 4)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")
+
+#reg2<- glm(DominanceCongruencyEffect200~score + BIS + IPIP_Domineering, data = my.data)
+#summary.lm(reg2)
+#ggplot(my.data, aes(score, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+#ggplot(my.data, aes(BIS, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+#ggplot(my.data, aes(IPIP_Domineering, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+
+my.data1 <- gather(my.data1, soa, dom.cong.eff, 48:50) # gathering DominanceEffect200, DominanceEffect400, and DominanceEffect800 under SOA with 3 lelvels (200, 400, 800), and having their scores under dom.cong.eff.
+
+#reg3<- glm(dom.cong.eff~social.anxiety.score, data = my.data1)
+#summary.lm(reg3)
+#ggplot(my.data1, aes(social.anxiety.score, dom.cong.eff)) + geom_point(aes(color = social.anxiety.scale), size = 2)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")+ facet_grid(.~soa)
+
+reg4<- glm(dom.cong.eff~social.anxiety.score+ BIS + IPIP_Domineering, data = my.data1)
+summary.lm(reg4)
+
+ggplot(my.data1, aes(social.anxiety.score, dom.cong.eff)) + geom_point(aes(color = social.anxiety.scale), size = 2)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")+ facet_grid(.~soa)
+
+ggplot(my.data1, aes(BIS, dom.cong.eff)) + geom_point(size = 2)+ geom_smooth(method = "lm")+ facet_grid(.~soa)
+
+reg5<- glm(dom.cong.eff~social.anxiety.score+ BIS + IPIP_Domineering, data = my.data1, subset = soa=="DominanceCongruencyEffect200")
+summary.lm(reg5)
+reg6<- glm(dom.cong.eff~social.anxiety.score+ BIS + IPIP_Domineering, data = my.data1, subset = soa=="DominanceCongruencyEffect400")
+summary.lm(reg6)
+reg7<- glm(dom.cong.eff~social.anxiety.score+ BIS + IPIP_Domineering, data = my.data1, subset = soa=="DominanceCongruencyEffect800")
+summary.lm(reg7)
+
+```
+Based on the analysis above, we can conclude that while the overal cueing effect for dominant faces (Dominance Congruency Effect) is only predicted by BIS score, when we break it to its SOA subcomponents we that the social anxiety score (BFNE+SPS+SIAS) predicts it at SOA of 200ms and a BIS is the best predictor at SOA of 800ms.
+
+
+
+
 ## Power analysis for a regression analysis
 Regress Dominance congruence effect on social anxiety scores (SPS, SIAS, BFNE) and domoinance level (IPIP_Domineering. 
 
 ``` {r}
 
-df.num <- 3 # number of continuous variables (predictors)
-df.denom <- # create a vecor? this is what we're looking for
+pwr.f2.test(u = 2, v= NULL, f2 = .15, sig.level = .05, power = .8) # returns v = 64.31932 => N= 67
+
+
+
+df.denom <- 23 # 27 (my sample size) - 3 (predictors) - 1 
 eff.size <- .15 # medium effect size
 p.val <- .05
+pow # post-hoc power analysis
+pwr.f2.test(2, v = df.denom, f2 = eff.size, sig.level = p.val, power = NULL) # returns power = 0.3617643
+
+
+eff.size <- .35 # large effect size
+p.val <- .05
+pow # post-hoc power analysis
+pwr.f2.test(3, 23, .35,.05, power = NULL) # returns power = 0.6526652
+
+df.num <- 3 # number of continuous variables (predictors)
+eff.size <- .35 # large effect size
+p.val <- .05
 pow <- .8
-
-
-
-
-
+pwr.f2.test(3, v= NULL, .35, .05, power = .8) # returns v = 31.3129 => N = 35
 
 
 ```
