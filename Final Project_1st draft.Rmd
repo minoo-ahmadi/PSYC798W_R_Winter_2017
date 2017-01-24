@@ -25,15 +25,16 @@ my.data1<- my.data
 my.data1 <- gather(my.data1, social.anxiety.scale, social.anxiety.score, 202:204) # gathering BFNE, SPS, and SIAS under social.anxiety, as they are all indicators of social anxiety.
 my.data1$social.anxiety.scale <- as.factor(my.data1$social.anxiety.scale)
 
+ggplot(my.data1, aes(BIS)) + geom_histogram() # to see the distribution of BIS. not normally distributed.
 # reg1<- glm(DominanceCongruencyEffect200~social.anxiety.score, data = my.data1)
 #summary.lm(reg1)
-#ggplot(my.data1, aes(social.anxiety.score, DominanceCongruencyEffect200)) + geom_point(aes(color = social.anxiety.scale), size = 4)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")
+#ggplot(my.data1, aes(social.anxiety.score, DominanceCongruencyEffect200)) + geom_point(aes(color = social.anxiety.scale), size = 2)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")
 
 #reg2<- glm(DominanceCongruencyEffect200~score + BIS + IPIP_Domineering, data = my.data)
 #summary.lm(reg2)
-#ggplot(my.data, aes(score, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
-#ggplot(my.data, aes(BIS, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
-#ggplot(my.data, aes(IPIP_Domineering, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+#ggplot(my.data1, aes(social.anxiety.score, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+#ggplot(my.data1, aes(BIS, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
+#ggplot(my.data1, aes(IPIP_Domineering, DominanceCongruencyEffect200)) + geom_point()+ geom_smooth(method = "lm")
 
 my.data1 <- gather(my.data1, soa, dom.cong.eff, 48:50) # gathering DominanceEffect200, DominanceEffect400, and DominanceEffect800 under SOA with 3 lelvels (200, 400, 800), and having their scores under dom.cong.eff.
 
@@ -123,6 +124,23 @@ for(i in 1:repetitions){
 
 
 ```
+
+
+Below is a logistic regression simulation. We begin by assigning parameter values for the model. We then generate 1,000 random normal variates, calculating the linear predictor and expit for each, and then testing vectorwise against 1,000 random uniforms.
+
+```{r}
+intercept = 0
+beta = 0.5
+xtest = rnorm(1000,1,1)
+linpred = intercept + xtest*beta
+prob = exp(linpred)/(1 + exp(linpred))
+runis = runif(1000,0,1)
+ytest = ifelse(runis < prob,1,0)
+
+
+powr<- (sum(ytest))/length(ytest) #????
+```
+
 
 The example for t.test:
 ```{r}
