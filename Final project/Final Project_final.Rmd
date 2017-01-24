@@ -1,0 +1,79 @@
+---
+title: "Final Project"
+author: "Minoo Ahmadi"
+date: "January 19, 2017"
+output: html_document
+---
+
+
+```{r "setup", include=FALSE}
+require("knitr")
+opts_knit$set(root.dir = "~/gits/project/")
+```
+
+Regressing Dominance congruence effect at soa of 200ms (DominanceCongruencyEffect200) on social anxiety score. 
+```{r}
+
+library (haven)
+library(tidyr)
+library(ggplot2)
+getwd() 
+setwd("C:/Users/ahmadi/Documents/Courses/PSYC798W/PSYC798W_R_Winter_2017/Data")
+
+my.data<- read_sav("Data_FYP.sav")
+
+my.data <- gather(my.data, social.anxiety.scale, social.anxiety.score, 202:204) # gathering BFNE, SPS, and SIAS under social.anxiety, as they are all indicators of social anxiety.
+my.data$social.anxiety.scale <- as.factor(my.data$social.anxiety.scale)
+
+reg<- lm(DominanceCongruencyEffect200~social.anxiety.score, data = my.data)
+
+summary(reg)
+
+ggplot(my.data, aes(social.anxiety.score, DominanceCongruencyEffect200)) + geom_point(aes(color = social.anxiety.scale), size = 2)+ geom_smooth(method = "lm")+ scale_color_brewer(palette = "Set1")
+
+```
+
+## Power analysis for a regression analysis
+
+``` {r}
+install.packages("QuantPsyc")
+library(QuantPsyc)
+
+n.sim <- 100
+sample.ns <- 20:120
+
+lm.beta(reg)
+beta.standardized <- .305
+intercept <- summary(reg)$coefficients["(Intercept)", "Estimate"]
+
+sigma.error <- summary(reg)$sigma
+
+mean.x <- mean(my.data$social.anxiety.score)
+sd.x <- sd(my.data$social.anxiety.score)
+
+power.analysis.results <- data.frame(sample.size = sample.ns, power = NA)
+
+
+for(this.sample in sample.ns) {
+  results <- data.frame(iteration = 1:n.sim, sample = this.sample, bzero = NA, beta =NA, t= NA, p = NA)
+  for (i in 1:n.sim){
+    x <- rnorm(sample.ns, mean = mean.x, sd = sd.x)
+    error <- rnorm(100, mean = 0, sd = sigma.error)
+    this.y <- intercept + beta.standardized * x + error
+    this.lm <- lm(this.y~x)
+    results[i, "bzero"] <- summary(this.lm)$coefficients["(Intercept)", "Estimate"]
+    results[i, "beta"] <- summary(this.lm)$coefficients[2, "Estimate"]
+    results[i, "t"] <- summary(this.lm)$coefficients[2, "t value"]
+    results[i, "p"] <- summary(this.lm)$coefficients[2, "Pr(>|t|)"]
+    if(i %% 50 == 0) {
+      print(paste("finished simulation #", i))
+    }
+  }
+results$sig <- ifelse(results$p < .05, TRUE, FALSE)
+power.analysis.results["power"] <- sum(results$sig)/nrow(results)
+}
+head(results) # seems like it ran through all the sample.ns
+head(power.analysis.results) # but here, I get the same power for every iteration.
+
+```
+
