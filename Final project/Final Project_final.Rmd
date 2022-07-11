@@ -73,7 +73,7 @@ results$sig <- ifelse(results$p < .05, TRUE, FALSE)
 power.analysis.results["power"] <- sum(results$sig)/nrow(results)
 }
 head(results) # seems like it ran through all the sample.ns
-head(power.analysis.results) # but here, I get the same power for every iteration.
+head(power.analysis.results) 
 
 ```
 
